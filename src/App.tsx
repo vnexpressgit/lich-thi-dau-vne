@@ -437,36 +437,6 @@ export default function App() {
           />
         ) : (
           <>
-            {/* Featured Popular Clubs shortcut pills */}
-            <div className="bg-white rounded-xl border border-gray-200 p-2.5 sm:px-4 sm:py-2.5 shadow-2xs mb-3 flex items-center justify-between gap-2 overflow-x-auto scrollbar-none">
-              <div className="flex items-center gap-2 text-xs font-bold text-gray-700 whitespace-nowrap flex-shrink-0">
-                <span className="text-[#9f224e] font-black">★ CLB Tiêu Điểm:</span>
-              </div>
-              <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none">
-                {[
-                  { name: 'Manchester United (MU)', id: 'man-utd-33', isHot: true },
-                  { name: 'Arsenal', id: 'arsenal-42' },
-                  { name: 'Real Madrid', id: '541' },
-                  { name: 'Công An Hà Nội (CAHN)', id: 'cahn-3801' },
-                  { name: 'Chelsea', id: '49' },
-                  { name: 'Liverpool', id: '40' }
-                ].map((club) => (
-                  <button
-                    key={club.id}
-                    onClick={() => navigateToTeam(club.id)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition flex items-center gap-1 border ${
-                      club.isHot 
-                        ? 'bg-rose-50 text-[#9f224e] border-rose-200 hover:bg-rose-100 font-bold' 
-                        : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
-                    }`}
-                  >
-                    <span>{club.name}</span>
-                    {club.isHot && <span className="text-[10px] text-red-600">★</span>}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Mobile & Tablet Quick Bar (Dual Filter & Standings Trigger) */}
             <div className="lg:hidden flex items-center justify-between gap-2 mb-3">
               <div className="flex items-center gap-2 flex-wrap">
