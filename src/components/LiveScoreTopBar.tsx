@@ -32,24 +32,77 @@ export const LiveScoreTopBar: React.FC<LiveScoreTopBarProps> = ({
   const curIdx = dateList.indexOf(selectedDate);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const activeDateRef = useRef<HTMLButtonElement>(null);
+  const isUserActionRef = useRef<boolean>(false);
 
-  // Auto-scroll active date into view on mobile/tablet
+  // Auto-scroll active date into view, ensuring 'Hôm nay' is always positioned flush next to Next button in 'Kết quả'
   useEffect(() => {
-    if (activeDateRef.current && scrollContainerRef.current) {
-      activeDateRef.current.scrollIntoView({
-        behavior: 'smooth',
-        inline: 'center',
-        block: 'nearest'
-      });
-    }
-  }, [selectedDate]);
+    const scrollToTarget = (smooth = false) => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      if (currentTab === 'results' && selectedDate === todayDate) {
+        // Yêu cầu: Trang 'kết quả' phần show các ngày luôn mặc định hiển thị block 'Hôm nay' nằm ở sát button Next,
+        // đảm bảo user có thể nhìn thấy ngay trong lần truy cập đầu tiên.
+        container.scrollTo({
+          left: container.scrollWidth,
+          behavior: smooth ? 'smooth' : 'auto'
+        });
+      } else if (currentTab === 'schedule' && selectedDate === todayDate) {
+        container.scrollTo({
+          left: 0,
+          behavior: smooth ? 'smooth' : 'auto'
+        });
+      } else if (activeDateRef.current) {
+        activeDateRef.current.scrollIntoView({
+          behavior: smooth ? 'smooth' : 'auto',
+          inline: currentTab === 'results' ? 'end' : 'center',
+          block: 'nearest'
+        });
+      }
+    };
+
+    const isUserAction = isUserActionRef.current;
+    isUserActionRef.current = false;
+
+    // Immediate alignment on mount / tab change / date change
+    scrollToTarget(isUserAction);
+
+    // Staggered frames to ensure alignment after browser layout recalculation, font load & flexbox sizing
+    const frameId = requestAnimationFrame(() => scrollToTarget(false));
+    const timer1 = setTimeout(() => scrollToTarget(false), 50);
+    const timer2 = setTimeout(() => scrollToTarget(false), 150);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, [selectedDate, currentTab, dateList, todayDate]);
+
+  // Keep 'Hôm nay' pinned to the right edge next to Next button on window resize when in 'results' tab
+  useEffect(() => {
+    const handleResize = () => {
+      const container = scrollContainerRef.current;
+      if (container && currentTab === 'results' && selectedDate === todayDate) {
+        container.scrollLeft = container.scrollWidth;
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [currentTab, selectedDate, todayDate]);
 
   const prevDate = () => {
-    if (curIdx > 0) onSelectDate(dateList[curIdx - 1]);
+    if (curIdx > 0) {
+      isUserActionRef.current = true;
+      onSelectDate(dateList[curIdx - 1]);
+    }
   };
 
   const nextDate = () => {
-    if (curIdx < dateList.length - 1) onSelectDate(dateList[curIdx + 1]);
+    if (curIdx < dateList.length - 1) {
+      isUserActionRef.current = true;
+      onSelectDate(dateList[curIdx + 1]);
+    }
   };
 
   return (
@@ -95,7 +148,7 @@ export const LiveScoreTopBar: React.FC<LiveScoreTopBarProps> = ({
           {/* Scrollable list of date cards */}
           <div 
             ref={scrollContainerRef}
-            className="flex-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-none py-0.5 px-0.5 scroll-smooth"
+            className="flex-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-none py-0.5 px-0.5"
           >
             {dateList.map((dateStr) => {
               const isSelected = selectedDate === dateStr && currentTab !== 'live';
@@ -111,6 +164,7 @@ export const LiveScoreTopBar: React.FC<LiveScoreTopBarProps> = ({
                   key={dateStr}
                   ref={isSelected ? activeDateRef : null}
                   onClick={() => {
+                    isUserActionRef.current = true;
                     onSelectDate(dateStr);
                     if (currentTab === 'live') {
                       onTabChange('schedule');

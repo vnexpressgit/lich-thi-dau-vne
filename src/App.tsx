@@ -52,7 +52,15 @@ export default function App() {
   const [allFixtures, setAllFixtures] = useState<FixtureItem[]>(() => generateAllFixtures());
 
   // App Tabs: 'schedule' (Lịch thi đấu) | 'results' (KQBD) | 'live' | 'favorites' | 'standings'
-  const [currentTab, setCurrentTab] = useState<'schedule' | 'results' | 'live' | 'favorites'>('schedule');
+  const [currentTab, setCurrentTab] = useState<'schedule' | 'results' | 'live' | 'favorites'>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes('ket-qua') || path.includes('results')) {
+        return 'results';
+      }
+    }
+    return 'schedule';
+  });
 
   // Dates config
   const todayDateStr = "2026-09-30";
