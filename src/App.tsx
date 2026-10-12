@@ -59,7 +59,12 @@ export default function App() {
   const yesterdayDateStr = "2026-09-29";
   const tomorrowDateStr = "2026-10-01";
 
-  const dateList = [
+  // Full calendar dates pool
+  const allDatePool = [
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-26",
+    "2026-09-27",
     "2026-09-28",
     "2026-09-29",
     "2026-09-30",
@@ -73,8 +78,29 @@ export default function App() {
     "2026-10-08",
     "2026-10-09",
     "2026-10-10",
-    "2026-10-11"
+    "2026-10-11",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15"
   ];
+
+  // Requirements:
+  // - Tại trang Lịch thi đấu: chỉ show data của hôm nay và các ngày tương lai
+  const scheduleDateList = useMemo(() => {
+    return allDatePool.filter(d => d >= todayDateStr);
+  }, []);
+
+  // - Tại trang Kết quả: chỉ show data của các ngày cũ và ngày hôm nay
+  const resultsDateList = useMemo(() => {
+    return allDatePool.filter(d => d <= todayDateStr);
+  }, []);
+
+  // Active dateList based on current tab
+  const activeDateList = useMemo(() => {
+    if (currentTab === 'results') return resultsDateList;
+    return scheduleDateList;
+  }, [currentTab, resultsDateList, scheduleDateList]);
 
   const [selectedDate, setSelectedDate] = useState<string>(todayDateStr);
 
@@ -272,14 +298,10 @@ export default function App() {
     setCurrentTab(tab);
     setExpandedMatches(false);
     if (tab === 'results') {
-      // Dynamic default: morning defaults to yesterday/overnight
-      const currentHourVN = 9;
-      if (currentHourVN < 14) {
-        setSelectedDate(yesterdayDateStr);
-      } else {
-        setSelectedDate(todayDateStr);
-      }
+      // Kết quả: chỉ show data của các ngày cũ và ngày hôm nay
+      setSelectedDate(todayDateStr);
     } else if (tab === 'schedule') {
+      // Lịch thi đấu: chỉ show data của hôm nay và các ngày tương lai
       setSelectedDate(todayDateStr);
     }
   };
@@ -348,10 +370,33 @@ export default function App() {
       return sortFixtures(list, currentTab === 'results' ? 'results' : 'schedule');
     }
 
-    // Tab filter
+    // User requirement:
+    // Khi ấn xem 'Live' show data các trận đang Live lên trên đầu, 
+    // đồng thời show các trận tiếp theo trong 24h tới kể từ thời điểm đang xem.
     if (currentTab === 'live') {
-      list = list.filter(f => ['1H', '2H', 'HT', 'ET', 'PEN', 'LIVE'].includes(f.fixture.status.short));
-      return sortFixtures(list, 'results');
+      const currentSimTime = new Date("2026-09-30T12:00:00+00:00").getTime();
+      const in24hTime = currentSimTime + 24 * 60 * 60 * 1000;
+
+      list = list.filter(f => {
+        const isLive = ['1H', '2H', 'HT', 'ET', 'PEN', 'LIVE'].includes(f.fixture.status.short);
+        if (isLive) return true;
+        // Trận tiếp theo trong 24h tới (chưa đấu hoặc sắp đá)
+        const matchTime = new Date(f.fixture.date).getTime();
+        const isUpcoming = ['NS', 'COUNTDOWN'].includes(f.fixture.status.short);
+        return isUpcoming && matchTime >= currentSimTime && matchTime <= in24hTime;
+      });
+
+      return list.sort((a, b) => {
+        const isLiveA = ['1H', '2H', 'HT', 'ET', 'PEN', 'LIVE'].includes(a.fixture.status.short);
+        const isLiveB = ['1H', '2H', 'HT', 'ET', 'PEN', 'LIVE'].includes(b.fixture.status.short);
+        if (isLiveA && !isLiveB) return -1;
+        if (!isLiveA && isLiveB) return 1;
+        if (isLiveA && isLiveB) {
+          return (b.fixture.status.elapsed || 0) - (a.fixture.status.elapsed || 0);
+        }
+        // Các trận tiếp theo sắp xếp theo giờ đá sớm nhất (Kickoff Time ASC)
+        return a.fixture.timestamp - b.fixture.timestamp;
+      });
     }
 
     if (currentTab === 'favorites') {
@@ -360,10 +405,20 @@ export default function App() {
     }
 
     if (currentTab === 'results') {
-      list = list.filter(f => ['FT', 'AET', '1H', '2H', 'HT', 'ET', 'PEN', 'LIVE'].includes(f.fixture.status.short));
+      // Trang Kết quả: chỉ show data của các ngày cũ và ngày hôm nay
+      list = list.filter(f => {
+        const matchDay = getFootballDayString(f.fixture.date);
+        return matchDay <= todayDateStr && ['FT', 'AET', '1H', '2H', 'HT', 'ET', 'PEN', 'LIVE'].includes(f.fixture.status.short);
+      });
+    } else if (currentTab === 'schedule') {
+      // Trang Lịch thi đấu: chỉ show data của hôm nay và các ngày tương lai
+      list = list.filter(f => {
+        const matchDay = getFootballDayString(f.fixture.date);
+        return matchDay >= todayDateStr;
+      });
     }
 
-    // Date cycle
+    // Filter by selected date on date bar
     list = list.filter(f => getFootballDayString(f.fixture.date) === selectedDate);
 
     return sortFixtures(list, currentTab === 'results' ? 'results' : 'schedule');
@@ -566,9 +621,34 @@ export default function App() {
                   todayDate={todayDateStr}
                   yesterdayDate={yesterdayDateStr}
                   tomorrowDate={tomorrowDateStr}
-                  dateList={dateList}
+                  dateList={activeDateList}
                   liveCount={liveCount}
+                  minDate={currentTab === 'schedule' ? todayDateStr : undefined}
+                  maxDate={currentTab === 'results' ? todayDateStr : undefined}
                 />
+
+                {/* When viewing LIVE mode, show quick status banner */}
+                {currentTab === 'live' && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center justify-between gap-2 shadow-2xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></span>
+                      <div>
+                        <span className="text-xs sm:text-sm font-bold text-red-700 block">
+                          Đang xem trực tiếp (LIVE) &amp; Trận đấu 24 giờ tới
+                        </span>
+                        <span className="text-[11px] text-gray-600 block">
+                          Các trận đang diễn ra được ưu tiên hiển thị ở đầu trang, tiếp nối là các trận đấu sắp khởi tranh trong 24h.
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleTabChange('schedule')}
+                      className="px-2.5 py-1 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 whitespace-nowrap transition"
+                    >
+                      Về Lịch thi đấu
+                    </button>
+                  </div>
+                )}
 
                 {/* Matches Grouped by League Header */}
                 {groupedByLeague.length === 0 ? (
@@ -578,13 +658,15 @@ export default function App() {
                     </div>
                     <h3 className="text-sm sm:text-base font-bold text-gray-900">
                       {currentTab === 'live' 
-                        ? `Hiện không có trận đấu nào của ${selectedLeague ? selectedLeague.vietnameseName : 'các giải'} đang đá trực tiếp` 
+                        ? `Hiện không có trận nào đang Live hoặc sắp diễn ra trong 24h tới` 
                         : currentTab === 'favorites' 
                         ? "Bạn chưa đánh dấu theo dõi trận đấu nào"
                         : `Không có trận đấu nào trong ngày được chọn`}
                     </h3>
                     <p className="text-xs text-gray-500 max-w-md mx-auto">
-                      {currentTab === 'favorites' 
+                      {currentTab === 'live'
+                        ? "Hệ thống sẽ tự động cập nhật ngay khi các trận đấu khởi tranh. Bạn có thể xem lịch thi đấu hoặc kết quả các trận gần nhất."
+                        : currentTab === 'favorites' 
                         ? "Nhấn vào biểu tượng ngôi sao ☆ ở bên phải mỗi trận để lưu và theo dõi nhanh tại đây."
                         : "Hãy thử chọn ngày khác trên thanh ngày ở trên hoặc nhấn nút bên dưới để xem tất cả trận hôm nay."}
                     </p>

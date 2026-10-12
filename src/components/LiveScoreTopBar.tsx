@@ -12,6 +12,8 @@ interface LiveScoreTopBarProps {
   tomorrowDate: string;
   dateList: string[];
   liveCount: number;
+  minDate?: string;
+  maxDate?: string;
 }
 
 export const LiveScoreTopBar: React.FC<LiveScoreTopBarProps> = ({
@@ -23,7 +25,9 @@ export const LiveScoreTopBar: React.FC<LiveScoreTopBarProps> = ({
   yesterdayDate,
   tomorrowDate,
   dateList,
-  liveCount
+  liveCount,
+  minDate,
+  maxDate
 }) => {
   const curIdx = dateList.indexOf(selectedDate);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -160,6 +164,8 @@ export const LiveScoreTopBar: React.FC<LiveScoreTopBarProps> = ({
             <input
               type="date"
               value={selectedDate}
+              min={minDate}
+              max={maxDate}
               onChange={(e) => {
                 if (e.target.value) {
                   onSelectDate(e.target.value);

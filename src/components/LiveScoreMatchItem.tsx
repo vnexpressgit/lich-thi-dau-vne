@@ -69,9 +69,11 @@ export const LiveScoreMatchItem: React.FC<LiveScoreMatchItemProps> = ({
               <span className="text-gray-900 font-bold text-xs sm:text-sm tracking-tight font-mono">
                 {time}
               </span>
-              {isLateNight && (
+              {mode === 'live' ? (
+                <span className="text-[9px] text-[#9f224e] font-bold">{formatKickoffVN(fixture.fixture.date).dateVN}</span>
+              ) : isLateNight ? (
                 <span className="text-[9px] text-indigo-600 font-medium">Đêm</span>
-              )}
+              ) : null}
             </div>
           )}
         </div>
