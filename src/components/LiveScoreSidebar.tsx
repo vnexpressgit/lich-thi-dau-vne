@@ -14,12 +14,12 @@ interface LiveScoreSidebarProps {
 }
 
 const SIDEBAR_COMPETITIONS = [
-  { id: 39, name: "Premier League", country: "England", logo: "https://media.api-sports.io/football/leagues/39.png" },
-  { id: 2, name: "Champions League", country: "UEFA", logo: "https://media.api-sports.io/football/leagues/2.png" },
-  { id: 382, name: "V-League", country: "Vietnam", logo: "https://media.api-sports.io/football/leagues/382.png" },
-  { id: 140, name: "LaLiga", country: "Spain", logo: "https://media.api-sports.io/football/leagues/140.png" },
-  { id: 135, name: "Serie A", country: "Italy", logo: "https://media.api-sports.io/football/leagues/135.png" },
-  { id: 78, name: "Bundesliga", country: "Germany", logo: "https://media.api-sports.io/football/leagues/78.png" },
+  { id: 39, name: "Premier League", country: "England", logo: "https://is.vnecdn.net/objects/leagues/39.png?v=1" },
+  { id: 2, name: "Champions League", country: "UEFA", logo: "https://is.vnecdn.net/objects/leagues/2.png?v=1" },
+  { id: 340, name: "V-League", country: "Vietnam", logo: "https://is.vnecdn.net/objects/leagues/340.png?v=1" },
+  { id: 140, name: "LaLiga", country: "Spain", logo: "https://is.vnecdn.net/objects/leagues/140.png?v=1" },
+  { id: 135, name: "Serie A", country: "Italy", logo: "https://is.vnecdn.net/objects/leagues/135.png?v=1" },
+  { id: 78, name: "Bundesliga", country: "Germany", logo: "https://is.vnecdn.net/objects/leagues/78.png?v=1" },
   { id: 3, name: "Europa League (C2)", country: "UEFA", logo: "https://media.api-sports.io/football/leagues/3.png" },
   { id: 61, name: "Ligue 1", country: "France", logo: "https://media.api-sports.io/football/leagues/61.png" },
   { id: 307, name: "Saudi Pro League", country: "Saudi Arabia", logo: "https://media.api-sports.io/football/leagues/307.png" },

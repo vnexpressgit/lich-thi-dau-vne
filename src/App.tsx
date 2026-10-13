@@ -16,6 +16,12 @@ import {
 } from 'lucide-react';
 import { FixtureItem } from './types/football';
 import { generateAllFixtures } from './data/mockFixtures';
+import { fetchRealPremierLeagueFixtures } from './services/premierLeagueService';
+import { fetchRealChampionsLeagueFixtures } from './services/championsLeagueService';
+import { fetchRealLaLigaFixtures } from './services/laLigaService';
+import { fetchRealVLeagueFixtures } from './services/vLeagueService';
+import { fetchRealSerieAFixtures } from './services/serieAService';
+import { fetchRealBundesligaFixtures } from './services/bundesligaService';
 import { 
   getFootballDayString, 
   sortFixtures, 
@@ -62,47 +68,37 @@ export default function App() {
     return 'schedule';
   });
 
-  // Dates config
-  const todayDateStr = "2026-09-30";
-  const yesterdayDateStr = "2026-09-29";
-  const tomorrowDateStr = "2026-10-01";
+  // Dates config - Season 2026-2027 as of October 13, 2026
+  const todayDateStr = "2026-10-13";
+  const yesterdayDateStr = "2026-10-12";
+  const tomorrowDateStr = "2026-10-14";
 
-  // Full calendar dates pool
-  const allDatePool = [
-    "2026-09-24",
-    "2026-09-25",
-    "2026-09-26",
-    "2026-09-27",
-    "2026-09-28",
-    "2026-09-29",
-    "2026-09-30",
-    "2026-10-01",
-    "2026-10-02",
-    "2026-10-03",
-    "2026-10-04",
-    "2026-10-05",
-    "2026-10-06",
-    "2026-10-07",
-    "2026-10-08",
-    "2026-10-09",
-    "2026-10-10",
-    "2026-10-11",
-    "2026-10-12",
-    "2026-10-13",
-    "2026-10-14",
-    "2026-10-15"
-  ];
+  // Full calendar dates pool dynamically derived from all fixtures across the season
+  const allDatePool = useMemo(() => {
+    const datesSet = new Set<string>();
+    // Seed contiguous dates around today
+    const baseDays = [
+      "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10",
+      "2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15",
+      "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19", "2026-10-20"
+    ];
+    baseDays.forEach(d => datesSet.add(d));
+    allFixtures.forEach(f => {
+      datesSet.add(getFootballDayString(f.fixture.date));
+    });
+    return Array.from(datesSet).sort();
+  }, [allFixtures]);
 
   // Requirements:
   // - Tại trang Lịch thi đấu: chỉ show data của hôm nay và các ngày tương lai
   const scheduleDateList = useMemo(() => {
     return allDatePool.filter(d => d >= todayDateStr);
-  }, []);
+  }, [allDatePool, todayDateStr]);
 
   // - Tại trang Kết quả: chỉ show data của các ngày cũ và ngày hôm nay
   const resultsDateList = useMemo(() => {
     return allDatePool.filter(d => d <= todayDateStr);
-  }, []);
+  }, [allDatePool, todayDateStr]);
 
   // Active dateList based on current tab
   const activeDateList = useMemo(() => {
@@ -279,27 +275,56 @@ export default function App() {
   const [activeDetailMatch, setActiveDetailMatch] = useState<FixtureItem | null>(null);
   const [selectedStandingLeagueId, setSelectedStandingLeagueId] = useState<number | null>(null);
 
-  // Simulate live elapsed ticking
+  // Real-time synchronization with VnExpress APIs: Premier League (39) & Champions League (2)
   useEffect(() => {
-    const timer = setInterval(() => {
-      setAllFixtures(prev => prev.map(f => {
-        if (['1H', '2H'].includes(f.fixture.status.short) && f.fixture.status.elapsed) {
-          const nextMin = f.fixture.status.elapsed >= 90 ? 90 : f.fixture.status.elapsed + 1;
-          return {
-            ...f,
-            fixture: {
-              ...f.fixture,
-              status: {
-                ...f.fixture.status,
-                elapsed: nextMin
-              }
+    let active = true;
+
+    async function syncRealData() {
+      try {
+        const [realPL, realCL, realLL, realVL, realSA, realBL] = await Promise.all([
+          fetchRealPremierLeagueFixtures().catch(() => []),
+          fetchRealChampionsLeagueFixtures().catch(() => []),
+          fetchRealLaLigaFixtures().catch(() => []),
+          fetchRealVLeagueFixtures().catch(() => []),
+          fetchRealSerieAFixtures().catch(() => []),
+          fetchRealBundesligaFixtures().catch(() => [])
+        ]);
+
+        if (active) {
+          setAllFixtures(prev => {
+            let updated = prev;
+            if (realPL.length > 0) {
+              updated = [...updated.filter(f => f.league.id !== 39), ...realPL];
             }
-          };
+            if (realCL.length > 0) {
+              updated = [...updated.filter(f => f.league.id !== 2), ...realCL];
+            }
+            if (realLL.length > 0) {
+              updated = [...updated.filter(f => f.league.id !== 140), ...realLL];
+            }
+            if (realVL.length > 0) {
+              updated = [...updated.filter(f => f.league.id !== 340 && f.league.id !== 382), ...realVL];
+            }
+            if (realSA.length > 0) {
+              updated = [...updated.filter(f => f.league.id !== 135), ...realSA];
+            }
+            if (realBL.length > 0) {
+              updated = [...updated.filter(f => f.league.id !== 78), ...realBL];
+            }
+            return updated;
+          });
         }
-        return f;
-      }));
-    }, 15000);
-    return () => clearInterval(timer);
+      } catch (e) {
+        console.error("VnExpress real fixtures fetch error:", e);
+      }
+    }
+
+    syncRealData();
+    const interval = setInterval(syncRealData, 60000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const handleTabChange = (tab: 'schedule' | 'results' | 'live' | 'favorites') => {
@@ -382,7 +407,7 @@ export default function App() {
     // Khi ấn xem 'Live' show data các trận đang Live lên trên đầu, 
     // đồng thời show các trận tiếp theo trong 24h tới kể từ thời điểm đang xem.
     if (currentTab === 'live') {
-      const currentSimTime = new Date("2026-09-30T12:00:00+00:00").getTime();
+      const currentSimTime = new Date("2026-10-13T08:00:00+07:00").getTime();
       const in24hTime = currentSimTime + 24 * 60 * 60 * 1000;
 
       list = list.filter(f => {

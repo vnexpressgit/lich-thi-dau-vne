@@ -6,16 +6,14 @@ import { FixtureItem } from '../types/football';
  * For example: A match at 02:00 AM on Oct 1st GMT+7 belongs to Football Day Sep 30th!
  */
 export function getFootballDayString(utcDateIso: string): string {
+  // VnExpress API fixture dates are already ISO strings in GMT+7 (e.g. "2026-10-13T02:00:00+07:00")
+  if (utcDateIso.includes('+07:00')) {
+    return utcDateIso.slice(0, 10);
+  }
   const d = new Date(utcDateIso);
   // Convert UTC date to GMT+7 timestamp
   const vnTimestamp = d.getTime() + 7 * 60 * 60 * 1000;
   const vnDate = new Date(vnTimestamp);
-  
-  // If hour < 6 AM, it belongs to the previous calendar day
-  const hour = vnDate.getUTCHours();
-  if (hour < 6) {
-    vnDate.setUTCDate(vnDate.getUTCDate() - 1);
-  }
 
   const yyyy = vnDate.getUTCFullYear();
   const mm = String(vnDate.getUTCMonth() + 1).padStart(2, '0');

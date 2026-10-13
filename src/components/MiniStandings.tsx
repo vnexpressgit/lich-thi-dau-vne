@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Trophy, ChevronRight } from 'lucide-react';
-import { PREMIER_LEAGUE_STANDINGS, VLEAGUE_STANDINGS } from '../data/mockFixtures';
+import { PREMIER_LEAGUE_STANDINGS, VLEAGUE_STANDINGS, LALIGA_STANDINGS, SERIEA_STANDINGS, BUNDESLIGA_STANDINGS } from '../data/mockFixtures';
 import { StandingTeam } from '../types/football';
 
 interface MiniStandingsProps {
@@ -8,40 +8,67 @@ interface MiniStandingsProps {
 }
 
 export const MiniStandings: React.FC<MiniStandingsProps> = ({ onSelectTeam }) => {
-  const [selectedLeague, setSelectedLeague] = useState<'epl' | 'vleague'>('epl');
+  const [selectedLeague, setSelectedLeague] = useState<'epl' | 'vleague' | 'laliga' | 'seriea' | 'bundesliga'>('epl');
 
-  const standings: StandingTeam[] = selectedLeague === 'epl' 
-    ? PREMIER_LEAGUE_STANDINGS 
-    : VLEAGUE_STANDINGS;
+  const standings: StandingTeam[] = 
+    selectedLeague === 'epl' ? PREMIER_LEAGUE_STANDINGS :
+    selectedLeague === 'vleague' ? VLEAGUE_STANDINGS :
+    selectedLeague === 'laliga' ? LALIGA_STANDINGS :
+    selectedLeague === 'seriea' ? SERIEA_STANDINGS :
+    BUNDESLIGA_STANDINGS;
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden">
       {/* Header */}
-      <div className="bg-[#fcfcfd] p-3.5 border-b border-gray-200 flex items-center justify-between">
+      <div className="bg-[#fcfcfd] p-3 border-b border-gray-200 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Trophy className="w-4 h-4 text-amber-500" />
           <h3 className="font-bold text-xs sm:text-sm text-gray-900 uppercase tracking-tight">
-            Bảng xếp hạng cập nhật
+            Bảng xếp hạng
           </h3>
         </div>
 
         {/* League Selector Switch */}
-        <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg text-xs font-semibold">
+        <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg text-[11px] font-semibold">
           <button
             onClick={() => setSelectedLeague('epl')}
-            className={`px-2.5 py-1 rounded-md transition ${
+            className={`px-2 py-0.5 rounded-md transition ${
               selectedLeague === 'epl' ? 'bg-[#9f224e] text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Ngoại Hạng Anh
+            NHA
           </button>
           <button
             onClick={() => setSelectedLeague('vleague')}
-            className={`px-2.5 py-1 rounded-md transition ${
+            className={`px-2 py-0.5 rounded-md transition ${
               selectedLeague === 'vleague' ? 'bg-[#9f224e] text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             V-League
+          </button>
+          <button
+            onClick={() => setSelectedLeague('laliga')}
+            className={`px-2 py-0.5 rounded-md transition ${
+              selectedLeague === 'laliga' ? 'bg-[#9f224e] text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            La Liga
+          </button>
+          <button
+            onClick={() => setSelectedLeague('seriea')}
+            className={`px-2 py-0.5 rounded-md transition ${
+              selectedLeague === 'seriea' ? 'bg-[#9f224e] text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Serie A
+          </button>
+          <button
+            onClick={() => setSelectedLeague('bundesliga')}
+            className={`px-2 py-0.5 rounded-md transition ${
+              selectedLeague === 'bundesliga' ? 'bg-[#9f224e] text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Bundesliga
           </button>
         </div>
       </div>

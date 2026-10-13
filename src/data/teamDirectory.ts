@@ -203,14 +203,14 @@ export const ARSENAL_PROFILE: TeamProfile = {
 };
 
 export const CAHN_PROFILE: TeamProfile = {
-  id: 3801,
-  slug: 'cahn-3801',
+  id: 16400,
+  slug: 'cahn-16400',
   name: 'Công An Hà Nội',
   shortName: 'CAHN',
   fullName: 'Câu lạc bộ Bóng đá Công An Hà Nội',
-  logo: 'https://media.api-sports.io/football/teams/3801.png',
+  logo: 'https://is.vnecdn.net/objects/teams/16400.png?v=1',
   country: 'Việt Nam',
-  leagueId: 382,
+  leagueId: 340,
   leagueName: 'V-League 1',
   stadium: 'Sân vận động Hàng Đẫy',
   capacity: 22500,
@@ -220,18 +220,18 @@ export const CAHN_PROFILE: TeamProfile = {
   marketValue: '5.2 triệu Euro',
   mainCompetitions: ['V-League 1', 'Cúp Quốc Gia', 'Shopee Cup (Cúp CLB Đông Nam Á)'],
   rank: 1,
-  points: 13,
-  played: 5,
-  win: 4,
-  draw: 1,
+  points: 9,
+  played: 3,
+  win: 3,
+  draw: 0,
   lose: 0,
-  goalsFor: 10,
-  goalsAgainst: 2,
-  form: ['W', 'W', 'D', 'W', 'W'],
+  goalsFor: 6,
+  goalsAgainst: 0,
+  form: ['W', 'W', 'W'],
   topScorers: [
     { rank: 1, name: 'Nguyễn Quang Hải', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', goals: 3, assists: 3 },
-    { rank: 2, name: 'Léo Artur', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80', goals: 3, assists: 1 },
-    { rank: 3, name: 'Vũ Văn Thanh', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', goals: 2, assists: 2 }
+    { rank: 2, name: 'Léo Artur', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80', goals: 2, assists: 1 },
+    { rank: 3, name: 'Vũ Văn Thanh', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', goals: 1, assists: 2 }
   ],
   squad: [
     { id: 301, name: 'Nguyễn Filip', number: 1, position: 'Thủ môn', nationality: 'Việt Nam', age: 33, photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80', appearances: 5, goals: 0, assists: 0, marketValue: '600.000 €' },
@@ -268,7 +268,7 @@ export function generateTeamProfile(id: number, name: string): TeamProfile {
     name,
     shortName: name,
     fullName: `${name} Football Club`,
-    logo: `https://media.api-sports.io/football/teams/${id}.png`,
+    logo: `https://is.vnecdn.net/objects/teams/${id}.png?v=1`,
     country: 'Quốc tế',
     leagueId: 39,
     leagueName: 'Giải đấu hàng đầu',
@@ -332,7 +332,7 @@ export function getTeamBySlugOrId(identifier: string | number): TeamProfile {
     return ARSENAL_PROFILE;
   }
   // CAHN
-  if (str === '3801' || str.includes('cahn') || str.includes('cong-an-ha-noi')) {
+  if (str === '16400' || str === '3801' || str.includes('cahn') || str.includes('cong-an-ha-noi')) {
     return CAHN_PROFILE;
   }
 

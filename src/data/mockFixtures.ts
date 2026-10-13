@@ -1,248 +1,13 @@
 import { FixtureItem, StandingTeam } from '../types/football';
+import { getInitialPremierLeagueFixtures } from '../services/premierLeagueService';
+import { getInitialChampionsLeagueFixtures, getInitialChampionsLeagueStandings } from '../services/championsLeagueService';
+import { getInitialLaLigaFixtures, getInitialLaLigaStandings } from '../services/laLigaService';
+import { getInitialVLeagueFixtures, getInitialVLeagueStandings } from '../services/vLeagueService';
+import { getInitialSerieAFixtures, getInitialSerieAStandings } from '../services/serieAService';
+import { getInitialBundesligaFixtures, getInitialBundesligaStandings } from '../services/bundesligaService';
 
-// 6 Exact fixtures from user prompt (for 2026-10-10):
-export const EXACT_PROMPT_FIXTURES: FixtureItem[] = [
-  {
-    fixture: {
-      id: 1557417,
-      referee: "Michael Oliver",
-      timezone: "UTC",
-      date: "2026-10-10T11:30:00+00:00",
-      timestamp: 1791631800,
-      periods: { first: null, second: null },
-      venue: { id: 494, name: "Emirates Stadium", city: "London" },
-      status: { long: "Not Started", short: "NS", elapsed: null, extra: null }
-    },
-    league: {
-      id: 39,
-      name: "Premier League",
-      country: "England",
-      logo: "https://media.api-sports.io/football/leagues/39.png",
-      flag: "https://media.api-sports.io/flags/gb-eng.svg",
-      season: 2026,
-      round: "Regular Season - 6",
-      standings: true,
-      tier: 1,
-      vietnameseName: "Premier League"
-    },
-    teams: {
-      home: { id: 42, name: "Arsenal", logo: "https://media.api-sports.io/football/teams/42.png", winner: null },
-      away: { id: 63, name: "Leeds", logo: "https://media.api-sports.io/football/teams/63.png", winner: null }
-    },
-    goals: { home: null, away: null },
-    score: {
-      halftime: { home: null, away: null },
-      fulltime: { home: null, away: null },
-      extratime: { home: null, away: null },
-      penalty: { home: null, away: null }
-    },
-    is_hot: true,
-    has_preview: true,
-    has_recap: false,
-    has_highlight: false,
-    previewText: "Pháo thủ đang giữ chuỗi 5 trận bất bại trên sân nhà Emirates và quyết tâm giành trọn 3 điểm trước Leeds United."
-  },
-  {
-    fixture: {
-      id: 1557419,
-      referee: "Anthony Taylor",
-      timezone: "UTC",
-      date: "2026-10-10T14:00:00+00:00",
-      timestamp: 1791640800,
-      periods: { first: null, second: null },
-      venue: { id: 519, name: "Stamford Bridge", city: "London" },
-      status: { long: "Not Started", short: "NS", elapsed: null, extra: null }
-    },
-    league: {
-      id: 39,
-      name: "Premier League",
-      country: "England",
-      logo: "https://media.api-sports.io/football/leagues/39.png",
-      flag: "https://media.api-sports.io/flags/gb-eng.svg",
-      season: 2026,
-      round: "Regular Season - 6",
-      standings: true,
-      tier: 1,
-      vietnameseName: "Premier League"
-    },
-    teams: {
-      home: { id: 49, name: "Chelsea", logo: "https://media.api-sports.io/football/teams/49.png", winner: null },
-      away: { id: 35, name: "Bournemouth", logo: "https://media.api-sports.io/football/teams/35.png", winner: null }
-    },
-    goals: { home: null, away: null },
-    score: {
-      halftime: { home: null, away: null },
-      fulltime: { home: null, away: null },
-      extratime: { home: null, away: null },
-      penalty: { home: null, away: null }
-    },
-    is_hot: true,
-    has_preview: true,
-    has_recap: false,
-    has_highlight: false,
-    previewText: "Chelsea đón tiếp Bournemouth tại Stamford Bridge trong bối cảnh các ngòi nổ tấn công như Cole Palmer đang thăng hoa."
-  },
-  {
-    fixture: {
-      id: 1557423,
-      referee: "Stuart Attwell",
-      timezone: "UTC",
-      date: "2026-10-10T14:00:00+00:00",
-      timestamp: 1791640800,
-      periods: { first: null, second: null },
-      venue: { id: 540, name: "Portman Road", city: "Ipswich" },
-      status: { long: "Not Started", short: "NS", elapsed: null, extra: null }
-    },
-    league: {
-      id: 39,
-      name: "Premier League",
-      country: "England",
-      logo: "https://media.api-sports.io/football/leagues/39.png",
-      flag: "https://media.api-sports.io/flags/gb-eng.svg",
-      season: 2026,
-      round: "Regular Season - 6",
-      standings: true,
-      tier: 1,
-      vietnameseName: "Premier League"
-    },
-    teams: {
-      home: { id: 57, name: "Ipswich", logo: "https://media.api-sports.io/football/teams/57.png", winner: null },
-      away: { id: 36, name: "Fulham", logo: "https://media.api-sports.io/football/teams/36.png", winner: null }
-    },
-    goals: { home: null, away: null },
-    score: {
-      halftime: { home: null, away: null },
-      fulltime: { home: null, away: null },
-      extratime: { home: null, away: null },
-      penalty: { home: null, away: null }
-    },
-    is_hot: false,
-    has_preview: false,
-    has_recap: false,
-    has_highlight: false,
-    previewText: "Cuộc chiến cân tài cân sức ở nhóm giữa bảng xếp hạng giữa Ipswich và Fulham."
-  },
-  {
-    fixture: {
-      id: 1557418,
-      referee: "Simon Hooper",
-      timezone: "UTC",
-      date: "2026-10-10T14:00:00+00:00",
-      timestamp: 1791640800,
-      periods: { first: null, second: null },
-      venue: { id: 495, name: "Villa Park", city: "Birmingham" },
-      status: { long: "Not Started", short: "NS", elapsed: null, extra: null }
-    },
-    league: {
-      id: 39,
-      name: "Premier League",
-      country: "England",
-      logo: "https://media.api-sports.io/football/leagues/39.png",
-      flag: "https://media.api-sports.io/flags/gb-eng.svg",
-      season: 2026,
-      round: "Regular Season - 6",
-      standings: true,
-      tier: 1,
-      vietnameseName: "Premier League"
-    },
-    teams: {
-      home: { id: 66, name: "Aston Villa", logo: "https://media.api-sports.io/football/teams/66.png", winner: null },
-      away: { id: 55, name: "Brentford", logo: "https://media.api-sports.io/football/teams/55.png", winner: null }
-    },
-    goals: { home: null, away: null },
-    score: {
-      halftime: { home: null, away: null },
-      fulltime: { home: null, away: null },
-      extratime: { home: null, away: null },
-      penalty: { home: null, away: null }
-    },
-    is_hot: false,
-    has_preview: false,
-    has_recap: false,
-    has_highlight: false,
-    previewText: "Aston Villa sở hữu phong độ cao trên thánh địa Villa Park sẵn sàng nghênh đón Bầy Ong Brentford."
-  },
-  {
-    fixture: {
-      id: 1557426,
-      referee: "Chris Kavanagh",
-      timezone: "UTC",
-      date: "2026-10-10T14:00:00+00:00",
-      timestamp: 1791640800,
-      periods: { first: null, second: null },
-      venue: { id: 589, name: "Stadium of Light", city: "Sunderland" },
-      status: { long: "Not Started", short: "NS", elapsed: null, extra: null }
-    },
-    league: {
-      id: 39,
-      name: "Premier League",
-      country: "England",
-      logo: "https://media.api-sports.io/football/leagues/39.png",
-      flag: "https://media.api-sports.io/flags/gb-eng.svg",
-      season: 2026,
-      round: "Regular Season - 6",
-      standings: true,
-      tier: 1,
-      vietnameseName: "Premier League"
-    },
-    teams: {
-      home: { id: 746, name: "Sunderland", logo: "https://media.api-sports.io/football/teams/746.png", winner: null },
-      away: { id: 51, name: "Brighton", logo: "https://media.api-sports.io/football/teams/51.png", winner: null }
-    },
-    goals: { home: null, away: null },
-    score: {
-      halftime: { home: null, away: null },
-      fulltime: { home: null, away: null },
-      extratime: { home: null, away: null },
-      penalty: { home: null, away: null }
-    },
-    is_hot: false,
-    has_preview: false,
-    has_recap: false,
-    has_highlight: false,
-    previewText: "Tân binh Sunderland đụng độ lối chơi kiểm soát bóng biến hóa của Chim Mòng Biển Brighton."
-  },
-  {
-    fixture: {
-      id: 1557425,
-      referee: "Paul Tierney",
-      timezone: "UTC",
-      date: "2026-10-10T16:30:00+00:00",
-      timestamp: 1791649800,
-      periods: { first: null, second: null },
-      venue: { id: 556, name: "Old Trafford", city: "Manchester" },
-      status: { long: "Not Started", short: "NS", elapsed: null, extra: null }
-    },
-    league: {
-      id: 39,
-      name: "Premier League",
-      country: "England",
-      logo: "https://media.api-sports.io/football/leagues/39.png",
-      flag: "https://media.api-sports.io/flags/gb-eng.svg",
-      season: 2026,
-      round: "Regular Season - 6",
-      standings: true,
-      tier: 1,
-      vietnameseName: "Premier League"
-    },
-    teams: {
-      home: { id: 33, name: "Manchester United", logo: "https://media.api-sports.io/football/teams/33.png", winner: null },
-      away: { id: 47, name: "Tottenham", logo: "https://media.api-sports.io/football/teams/47.png", winner: null }
-    },
-    goals: { home: null, away: null },
-    score: {
-      halftime: { home: null, away: null },
-      fulltime: { home: null, away: null },
-      extratime: { home: null, away: null },
-      penalty: { home: null, away: null }
-    },
-    is_hot: true,
-    has_preview: true,
-    has_recap: false,
-    has_highlight: false,
-    previewText: "Trận đại chiến tâm điểm vòng 6 giữa Quỷ Đỏ MU và Gà Trống Tottenham tại Nhà Hát của những Giấc Mơ."
-  }
-];
+// Real Premier League data is loaded directly from VnExpress API (https://gw.vnexpress.net/football/fixture?league_id=39)
+export const EXACT_PROMPT_FIXTURES: FixtureItem[] = [];
 
 export const LEAGUES_CONFIG = [
   {
@@ -250,30 +15,30 @@ export const LEAGUES_CONFIG = [
     name: "Premier League",
     country: "England",
     vietnameseName: "Premier League",
-    logo: "https://media.api-sports.io/football/leagues/39.png",
-    flag: "https://media.api-sports.io/flags/gb-eng.svg",
+    logo: "https://is.vnecdn.net/objects/leagues/39.png?v=1",
+    flag: "https://is.vnecdn.net/objects/flags/gb-eng.svg?v=1",
     tier: 1 as const,
     teams: [
-      { id: 33, name: "Manchester United", shortName: "Man United", logo: "https://media.api-sports.io/football/teams/33.png", venue: "Old Trafford" },
-      { id: 42, name: "Arsenal", shortName: "Arsenal", logo: "https://media.api-sports.io/football/teams/42.png", venue: "Emirates Stadium" },
-      { id: 40, name: "Liverpool", shortName: "Liverpool", logo: "https://media.api-sports.io/football/teams/40.png", venue: "Anfield" },
-      { id: 50, name: "Manchester City", shortName: "Man City", logo: "https://media.api-sports.io/football/teams/50.png", venue: "Etihad Stadium" },
-      { id: 49, name: "Chelsea", shortName: "Chelsea", logo: "https://media.api-sports.io/football/teams/49.png", venue: "Stamford Bridge" },
-      { id: 47, name: "Tottenham", shortName: "Tottenham", logo: "https://media.api-sports.io/football/teams/47.png", venue: "Tottenham Hotspur Stadium" },
-      { id: 34, name: "Newcastle", shortName: "Newcastle", logo: "https://media.api-sports.io/football/teams/34.png", venue: "St. James' Park" },
-      { id: 66, name: "Aston Villa", shortName: "Aston Villa", logo: "https://media.api-sports.io/football/teams/66.png", venue: "Villa Park" },
-      { id: 51, name: "Brighton", shortName: "Brighton", logo: "https://media.api-sports.io/football/teams/51.png", venue: "Amex Stadium" },
-      { id: 48, name: "West Ham", shortName: "West Ham", logo: "https://media.api-sports.io/football/teams/48.png", venue: "London Stadium" },
-      { id: 36, name: "Fulham", shortName: "Fulham", logo: "https://media.api-sports.io/football/teams/36.png", venue: "Craven Cottage" },
-      { id: 45, name: "Everton", shortName: "Everton", logo: "https://media.api-sports.io/football/teams/45.png", venue: "Goodison Park" },
-      { id: 55, name: "Brentford", shortName: "Brentford", logo: "https://media.api-sports.io/football/teams/55.png", venue: "Gtech Community Stadium" },
-      { id: 35, name: "Bournemouth", shortName: "Bournemouth", logo: "https://media.api-sports.io/football/teams/35.png", venue: "Vitality Stadium" },
-      { id: 52, name: "Crystal Palace", shortName: "Crystal Palace", logo: "https://media.api-sports.io/football/teams/52.png", venue: "Selhurst Park" },
-      { id: 39, name: "Wolves", shortName: "Wolves", logo: "https://media.api-sports.io/football/teams/39.png", venue: "Molineux Stadium" },
-      { id: 63, name: "Leeds", shortName: "Leeds", logo: "https://media.api-sports.io/football/teams/63.png", venue: "Elland Road" },
-      { id: 57, name: "Ipswich", shortName: "Ipswich", logo: "https://media.api-sports.io/football/teams/57.png", venue: "Portman Road" },
-      { id: 746, name: "Sunderland", shortName: "Sunderland", logo: "https://media.api-sports.io/football/teams/746.png", venue: "Stadium of Light" },
-      { id: 65, name: "Nottingham Forest", shortName: "Nottm Forest", logo: "https://media.api-sports.io/football/teams/65.png", venue: "City Ground" }
+      { id: 42, name: "Arsenal", shortName: "Arsenal", logo: "https://is.vnecdn.net/objects/teams/42.png?v=1", venue: "Emirates Stadium" },
+      { id: 50, name: "Man City", shortName: "Manchester City", logo: "https://is.vnecdn.net/objects/teams/50.png?v=1", venue: "Etihad Stadium" },
+      { id: 40, name: "Liverpool", shortName: "Liverpool", logo: "https://is.vnecdn.net/objects/teams/40.png?v=1", venue: "Anfield" },
+      { id: 33, name: "Man Utd", shortName: "Manchester United", logo: "https://is.vnecdn.net/objects/teams/33.png?v=1", venue: "Old Trafford" },
+      { id: 49, name: "Chelsea", shortName: "Chelsea", logo: "https://is.vnecdn.net/objects/teams/49.png?v=1", venue: "Stamford Bridge" },
+      { id: 47, name: "Tottenham", shortName: "Tottenham", logo: "https://is.vnecdn.net/objects/teams/47.png?v=1", venue: "Tottenham Hotspur Stadium" },
+      { id: 34, name: "Newcastle", shortName: "Newcastle", logo: "https://is.vnecdn.net/objects/teams/34.png?v=1", venue: "St. James' Park" },
+      { id: 66, name: "Aston Villa", shortName: "Aston Villa", logo: "https://is.vnecdn.net/objects/teams/66.png?v=1", venue: "Villa Park" },
+      { id: 51, name: "Brighton", shortName: "Brighton", logo: "https://is.vnecdn.net/objects/teams/51.png?v=1", venue: "Amex Stadium" },
+      { id: 55, name: "Brentford", shortName: "Brentford", logo: "https://is.vnecdn.net/objects/teams/55.png?v=1", venue: "Gtech Community Stadium" },
+      { id: 45, name: "Everton", shortName: "Everton", logo: "https://is.vnecdn.net/objects/teams/45.png?v=1", venue: "Goodison Park" },
+      { id: 63, name: "Leeds", shortName: "Leeds", logo: "https://is.vnecdn.net/objects/teams/63.png?v=1", venue: "Elland Road" },
+      { id: 64, name: "Hull City", shortName: "Hull City", logo: "https://is.vnecdn.net/objects/teams/64.png?v=1", venue: "MKM Stadium" },
+      { id: 57, name: "Ipswich", shortName: "Ipswich", logo: "https://is.vnecdn.net/objects/teams/57.png?v=1", venue: "Portman Road" },
+      { id: 52, name: "Crystal Palace", shortName: "Crystal Palace", logo: "https://is.vnecdn.net/objects/teams/52.png?v=1", venue: "Selhurst Park" },
+      { id: 1346, name: "Coventry", shortName: "Coventry", logo: "https://is.vnecdn.net/objects/teams/1346.png?v=1", venue: "Coventry Building Society Arena" },
+      { id: 65, name: "Nottingham Forest", shortName: "Nottingham Forest", logo: "https://is.vnecdn.net/objects/teams/65.png?v=1", venue: "City Ground" },
+      { id: 746, name: "Sunderland", shortName: "Sunderland", logo: "https://is.vnecdn.net/objects/teams/746.png?v=1", venue: "Stadium of Light" },
+      { id: 35, name: "Bournemouth", shortName: "Bournemouth", logo: "https://is.vnecdn.net/objects/teams/35.png?v=1", venue: "Vitality Stadium" },
+      { id: 36, name: "Fulham", shortName: "Fulham", logo: "https://is.vnecdn.net/objects/teams/36.png?v=1", venue: "Craven Cottage" }
     ],
     scorers: ["Erling Haaland", "Mohamed Salah", "Bukayo Saka", "Cole Palmer", "Bruno Fernandes", "Son Heung-min", "Declan Rice", "Alexander Isak"]
   },
@@ -282,89 +47,168 @@ export const LEAGUES_CONFIG = [
     name: "Champions League",
     country: "UEFA",
     vietnameseName: "Champions League",
-    logo: "https://media.api-sports.io/football/leagues/2.png",
-    flag: "https://media.api-sports.io/flags/eu.svg",
+    logo: "https://is.vnecdn.net/objects/leagues/2.png?v=1",
+    flag: "https://is.vnecdn.net/objects/flags/eu.svg?v=1",
     tier: 1 as const,
     teams: [
-      { id: 541, name: "Real Madrid", shortName: "Real Madrid", logo: "https://media.api-sports.io/football/teams/541.png", venue: "Santiago Bernabéu" },
-      { id: 50, name: "Manchester City", shortName: "Man City", logo: "https://media.api-sports.io/football/teams/50.png", venue: "Etihad Stadium" },
-      { id: 529, name: "Barcelona", shortName: "Barcelona", logo: "https://media.api-sports.io/football/teams/529.png", venue: "Camp Nou" },
-      { id: 157, name: "Bayern Munich", shortName: "Bayern", logo: "https://media.api-sports.io/football/teams/157.png", venue: "Allianz Arena" },
-      { id: 42, name: "Arsenal", shortName: "Arsenal", logo: "https://media.api-sports.io/football/teams/42.png", venue: "Emirates Stadium" },
-      { id: 165, name: "Borussia Dortmund", shortName: "Dortmund", logo: "https://media.api-sports.io/football/teams/165.png", venue: "Signal Iduna Park" },
-      { id: 505, name: "Inter Milan", shortName: "Inter", logo: "https://media.api-sports.io/football/teams/505.png", venue: "San Siro" },
-      { id: 85, name: "Paris Saint Germain", shortName: "PSG", logo: "https://media.api-sports.io/football/teams/85.png", venue: "Parc des Princes" }
+      { id: 541, name: "Real Madrid", shortName: "Real Madrid", logo: "https://is.vnecdn.net/objects/teams/541.png?v=1", venue: "Santiago Bernabéu" },
+      { id: 50, name: "Man City", shortName: "Manchester City", logo: "https://is.vnecdn.net/objects/teams/50.png?v=1", venue: "Etihad Stadium" },
+      { id: 529, name: "Barca", shortName: "Barcelona", logo: "https://is.vnecdn.net/objects/teams/529.png?v=1", venue: "Camp Nou" },
+      { id: 157, name: "Bayern", shortName: "Bayern München", logo: "https://is.vnecdn.net/objects/teams/157.png?v=1", venue: "Allianz Arena" },
+      { id: 42, name: "Arsenal", shortName: "Arsenal", logo: "https://is.vnecdn.net/objects/teams/42.png?v=1", venue: "Emirates Stadium" },
+      { id: 40, name: "Liverpool", shortName: "Liverpool", logo: "https://is.vnecdn.net/objects/teams/40.png?v=1", venue: "Anfield" },
+      { id: 85, name: "PSG", shortName: "Paris Saint Germain", logo: "https://is.vnecdn.net/objects/teams/85.png?v=1", venue: "Parc des Princes" },
+      { id: 505, name: "Inter", shortName: "Inter", logo: "https://is.vnecdn.net/objects/teams/505.png?v=1", venue: "San Siro" },
+      { id: 165, name: "Dortmund", shortName: "Borussia Dortmund", logo: "https://is.vnecdn.net/objects/teams/165.png?v=1", venue: "Signal Iduna Park" },
+      { id: 530, name: "Atletico ", shortName: "Atletico Madrid", logo: "https://is.vnecdn.net/objects/teams/530.png?v=1", venue: "Metropolitano Stadium" },
+      { id: 492, name: "Napoli", shortName: "Napoli", logo: "https://is.vnecdn.net/objects/teams/492.png?v=1", venue: "Stadio Diego Armando Maradona" },
+      { id: 66, name: "Aston Villa", shortName: "Aston Villa", logo: "https://is.vnecdn.net/objects/teams/66.png?v=1", venue: "Villa Park" },
+      { id: 33, name: "Man Utd", shortName: "Manchester United", logo: "https://is.vnecdn.net/objects/teams/33.png?v=1", venue: "Old Trafford" },
+      { id: 173, name: "RB Leipzig", shortName: "RB Leipzig", logo: "https://is.vnecdn.net/objects/teams/173.png?v=1", venue: "Red Bull Arena" },
+      { id: 228, name: "Sporting CP", shortName: "Sporting CP", logo: "https://is.vnecdn.net/objects/teams/228.png?v=1", venue: "José Alvalade" },
+      { id: 212, name: "FC Porto", shortName: "FC Porto", logo: "https://is.vnecdn.net/objects/teams/212.png?v=1", venue: "Estádio do Dragão" },
+      { id: 209, name: "Feyenoord", shortName: "Feyenoord", logo: "https://is.vnecdn.net/objects/teams/209.png?v=1", venue: "De Kuip" },
+      { id: 197, name: "PSV ", shortName: "PSV Eindhoven", logo: "https://is.vnecdn.net/objects/teams/197.png?v=1", venue: "Philips Stadion" },
+      { id: 569, name: "Club Brugge", shortName: "Club Brugge KV", logo: "https://is.vnecdn.net/objects/teams/569.png?v=1", venue: "Jan Breydel Stadion" },
+      { id: 543, name: "Real Betis", shortName: "Real Betis", logo: "https://is.vnecdn.net/objects/teams/543.png?v=1", venue: "Benito Villamarín" },
+      { id: 533, name: "Villarreal", shortName: "Villarreal", logo: "https://is.vnecdn.net/objects/teams/533.png?v=1", venue: "Estadio de la Cerámica" },
+      { id: 79, name: "Lille", shortName: "Lille", logo: "https://is.vnecdn.net/objects/teams/79.png?v=1", venue: "Decathlon Arena" },
+      { id: 116, name: "Lens", shortName: "Lens", logo: "https://is.vnecdn.net/objects/teams/116.png?v=1", venue: "Stade Bollaert-Delelis" },
+      { id: 172, name: "Stuttgart", shortName: "VfB Stuttgart", logo: "https://is.vnecdn.net/objects/teams/172.png?v=1", venue: "MHPArena" },
+      { id: 497, name: "AS Roma", shortName: "AS Roma", logo: "https://is.vnecdn.net/objects/teams/497.png?v=1", venue: "Stadio Olimpico" },
+      { id: 895, name: "Como", shortName: "Como", logo: "https://is.vnecdn.net/objects/teams/895.png?v=1", venue: "Stadio Giuseppe Sinigaglia" },
+      { id: 645, name: "Galatasaray", shortName: "Galatasaray", logo: "https://is.vnecdn.net/objects/teams/645.png?v=1", venue: "Rams Park" },
+      { id: 611, name: "Fenerbahçe", shortName: "Fenerbahçe", logo: "https://is.vnecdn.net/objects/teams/611.png?v=1", venue: "Şükrü Saracoğlu Stadium" },
+      { id: 550, name: "Shakhtar", shortName: "Shakhtar Donetsk", logo: "https://is.vnecdn.net/objects/teams/550.png?v=1", venue: "Volksparkstadion" },
+      { id: 560, name: "Slavia Praha", shortName: "Slavia Praha", logo: "https://is.vnecdn.net/objects/teams/560.png?v=1", venue: "Fortuna Arena" },
+      { id: 656, name: "Slovan Bratislava", shortName: "Slovan Bratislava", logo: "https://is.vnecdn.net/objects/teams/656.png?v=1", venue: "Tehelné pole" },
+      { id: 327, name: "Bodo/Glimt", shortName: "Bodo/Glimt", logo: "https://is.vnecdn.net/objects/teams/327.png?v=1", venue: "Aspmyra Stadion" },
+      { id: 759, name: "Viking", shortName: "Viking", logo: "https://is.vnecdn.net/objects/teams/759.png?v=1", venue: "SR-Bank Arena" },
+      { id: 1026, name: "Lask Linz", shortName: "Lask Linz", logo: "https://is.vnecdn.net/objects/teams/1026.png?v=1", venue: "Raiffeisen Arena" },
+      { id: 575, name: "AEK Athens", shortName: "AEK Athens FC", logo: "https://is.vnecdn.net/objects/teams/575.png?v=1", venue: "OPAP Arena" },
+      { id: 13976, name: "Sabah FA", shortName: "Sabah FA", logo: "https://is.vnecdn.net/objects/teams/13976.png?v=1", venue: "Bank Respublika Arena" }
     ],
-    scorers: ["Kylian Mbappe", "Vinicius Junior", "Jude Bellingham", "Harry Kane", "Erling Haaland", "Lamine Yamal", "Robert Lewandowski"]
+    scorers: ["Kylian Mbappe", "Vinicius Junior", "Harry Kane", "Erling Haaland", "Lamine Yamal", "Robert Lewandowski", "Bukayo Saka", "Antoine Griezmann"]
   },
   {
-    id: 382,
+    id: 340,
     name: "V-League",
     country: "Vietnam",
-    vietnameseName: "V-League",
-    logo: "https://media.api-sports.io/football/leagues/382.png",
-    flag: "https://media.api-sports.io/flags/vn.svg",
+    vietnameseName: "V-League 1",
+    logo: "https://is.vnecdn.net/objects/leagues/340.png?v=1",
+    flag: "https://is.vnecdn.net/objects/flags/vn.svg?v=1",
     tier: 1 as const,
     teams: [
-      { id: 3801, name: "Công An Hà Nội", shortName: "CAHN", logo: "https://media.api-sports.io/football/teams/3801.png", venue: "SVĐ Hàng Đẫy" },
-      { id: 3802, name: "Hà Nội FC", shortName: "Hà Nội", logo: "https://media.api-sports.io/football/teams/3802.png", venue: "SVĐ Hàng Đẫy" },
-      { id: 3803, name: "Thép Xanh Nam Định", shortName: "Nam Định", logo: "https://media.api-sports.io/football/teams/3803.png", venue: "SVĐ Thiên Trường" },
-      { id: 3804, name: "Thể Công Viettel", shortName: "Viettel", logo: "https://media.api-sports.io/football/teams/3804.png", venue: "SVĐ Mỹ Đình" },
-      { id: 3805, name: "Bình Dương", shortName: "Bình Dương", logo: "https://media.api-sports.io/football/teams/3805.png", venue: "SVĐ Gò Đậu" },
-      { id: 3806, name: "Hoàng Anh Gia Lai", shortName: "HAGL", logo: "https://media.api-sports.io/football/teams/3806.png", venue: "SVĐ Pleiku" }
+      { id: 16400, name: "Công An Hà Nội", shortName: "CAHN", logo: "https://is.vnecdn.net/objects/teams/16400.png?v=1", venue: "SVĐ Hàng Đẫy" },
+      { id: 9167, name: "Phù Đổng Ninh Bình", shortName: "Ninh Bình", logo: "https://is.vnecdn.net/objects/teams/9167.png?v=1", venue: "SVĐ Ninh Bình" },
+      { id: 3678, name: "Sông Lam Nghệ An", shortName: "SLNA", logo: "https://is.vnecdn.net/objects/teams/3678.png?v=1", venue: "SVĐ Vinh" },
+      { id: 3680, name: "Đông Á Thanh Hóa", shortName: "Thanh Hóa", logo: "https://is.vnecdn.net/objects/teams/3680.png?v=1", venue: "SVĐ Thanh Hóa" },
+      { id: 11134, name: "Hồng Lĩnh Hà Tĩnh", shortName: "Hà Tĩnh", logo: "https://is.vnecdn.net/objects/teams/11134.png?v=1", venue: "SVĐ Hà Tĩnh" },
+      { id: 3674, name: "Thép Xanh Nam Định", shortName: "Nam Định", logo: "https://is.vnecdn.net/objects/teams/3674.png?v=1", venue: "SVĐ Thiên Trường" },
+      { id: 3672, name: "Công An TP. Hồ Chí Minh", shortName: "CA TP.HCM", logo: "https://is.vnecdn.net/objects/teams/3672.png?v=1", venue: "SVĐ Thống Nhất" },
+      { id: 3669, name: "SHB Đà Nẵng", shortName: "Đà Nẵng", logo: "https://is.vnecdn.net/objects/teams/3669.png?v=1", venue: "SVĐ Hòa Xuân" },
+      { id: 3681, name: "Thể Công - Viettel", shortName: "Thể Công", logo: "https://is.vnecdn.net/objects/teams/3681.png?v=1", venue: "SVĐ Mỹ Đình" },
+      { id: 26601, name: "Bắc Ninh FC", shortName: "Bắc Ninh", logo: "https://is.vnecdn.net/objects/teams/26601.png?v=1", venue: "SVĐ Việt Yên" },
+      { id: 3671, name: "Hải Phòng FC", shortName: "Hải Phòng", logo: "https://is.vnecdn.net/objects/teams/3671.jpg?v=1", venue: "SVĐ Lạch Tray" },
+      { id: 3673, name: "Hoàng Anh Gia Lai", shortName: "HAGL", logo: "https://is.vnecdn.net/objects/teams/3673.jpg?v=1", venue: "SVĐ Pleiku" },
+      { id: 3670, name: "Hà Nội FC", shortName: "Hà Nội FC", logo: "https://is.vnecdn.net/objects/teams/3670.png?v=1", venue: "SVĐ Hàng Đẫy" },
+      { id: 9161, name: "Trường Tươi Bình Phước", shortName: "Bình Phước", logo: "https://is.vnecdn.net/objects/teams/9161.png?v=1", venue: "SVĐ Bình Phước" }
     ],
-    scorers: ["Nguyễn Quang Hải", "Nguyễn Tiến Linh", "Nguyễn Hoàng Đức", "Phạm Tuấn Hải", "Rafaelson"]
+    scorers: ["Nguyễn Quang Hải", "Nguyễn Tiến Linh", "Nguyễn Hoàng Đức", "Phạm Tuấn Hải", "Rafaelson", "Léo Artur"]
   },
   {
     id: 140,
     name: "LaLiga",
     country: "Spain",
-    vietnameseName: "LaLiga",
-    logo: "https://media.api-sports.io/football/leagues/140.png",
-    flag: "https://media.api-sports.io/flags/es.svg",
-    tier: 2 as const,
+    vietnameseName: "La Liga",
+    logo: "https://is.vnecdn.net/objects/leagues/140.png?v=1",
+    flag: "https://is.vnecdn.net/objects/flags/es.svg?v=1",
+    tier: 1 as const,
     teams: [
-      { id: 541, name: "Real Madrid", shortName: "Real Madrid", logo: "https://media.api-sports.io/football/teams/541.png", venue: "Santiago Bernabéu" },
-      { id: 529, name: "Barcelona", shortName: "Barcelona", logo: "https://media.api-sports.io/football/teams/529.png", venue: "Camp Nou" },
-      { id: 530, name: "Atletico Madrid", shortName: "Atlético", logo: "https://media.api-sports.io/football/teams/530.png", venue: "Metropolitano" },
-      { id: 531, name: "Athletic Club", shortName: "Athletic", logo: "https://media.api-sports.io/football/teams/531.png", venue: "San Mamés" },
-      { id: 536, name: "Sevilla", shortName: "Sevilla", logo: "https://media.api-sports.io/football/teams/536.png", venue: "Ramón Sánchez Pizjuán" },
-      { id: 532, name: "Valencia", shortName: "Valencia", logo: "https://media.api-sports.io/football/teams/532.png", venue: "Mestalla" }
+      { id: 529, name: "Barcelona", shortName: "Barcelona", logo: "https://is.vnecdn.net/objects/teams/529.png?v=1", venue: "Camp Nou" },
+      { id: 530, name: "Atletico Madrid", shortName: "Atletico Madrid", logo: "https://is.vnecdn.net/objects/teams/530.png?v=1", venue: "Metropolitano Stadium" },
+      { id: 543, name: "Real Betis", shortName: "Real Betis", logo: "https://is.vnecdn.net/objects/teams/543.png?v=1", venue: "Estadio de La Cartuja" },
+      { id: 541, name: "Real Madrid", shortName: "Real Madrid", logo: "https://is.vnecdn.net/objects/teams/541.png?v=1", venue: "Santiago Bernabéu Stadium" },
+      { id: 536, name: "Sevilla", shortName: "Sevilla", logo: "https://is.vnecdn.net/objects/teams/536.png?v=1", venue: "Estadio Ramón Sánchez-Pizjuán" },
+      { id: 548, name: "Real Sociedad", shortName: "Real Sociedad", logo: "https://is.vnecdn.net/objects/teams/548.png?v=1", venue: "Anoeta" },
+      { id: 542, name: "Alaves", shortName: "Alaves", logo: "https://is.vnecdn.net/objects/teams/542.png?v=1", venue: "Estadio Mendizorrotza" },
+      { id: 544, name: "Deportivo La Coruna", shortName: "Deportivo La Coruna", logo: "https://is.vnecdn.net/objects/teams/544.png?v=1", venue: "Estadio Municipal de Riazor" },
+      { id: 538, name: "Celta Vigo", shortName: "Celta Vigo", logo: "https://is.vnecdn.net/objects/teams/538.png?v=1", venue: "Municipal de Balaídos" },
+      { id: 531, name: "Athletic Club", shortName: "Athletic Club", logo: "https://is.vnecdn.net/objects/teams/531.png?v=1", venue: "San Mamés Stadium" },
+      { id: 533, name: "Villarreal", shortName: "Villarreal", logo: "https://is.vnecdn.net/objects/teams/533.png?v=1", venue: "Estadio de la Ceramica" },
+      { id: 540, name: "Espanyol", shortName: "Espanyol", logo: "https://is.vnecdn.net/objects/teams/540.png?v=1", venue: "RCDE Stadium" },
+      { id: 728, name: "Rayo Vallecano", shortName: "Rayo Vallecano", logo: "https://is.vnecdn.net/objects/teams/728.png?v=1", venue: "Campo de Futbol de Vallecas" },
+      { id: 546, name: "Getafe", shortName: "Getafe", logo: "https://is.vnecdn.net/objects/teams/546.png?v=1", venue: "Coliseum" },
+      { id: 4665, name: "Racing Santander", shortName: "Racing Santander", logo: "https://is.vnecdn.net/objects/teams/4665.png?v=1", venue: "Estadio El Sardinero" },
+      { id: 727, name: "Osasuna", shortName: "Osasuna", logo: "https://is.vnecdn.net/objects/teams/727.png?v=1", venue: "Estadio El Sadar" },
+      { id: 539, name: "Levante", shortName: "Levante", logo: "https://is.vnecdn.net/objects/teams/539.png?v=1", venue: "Estadio Ciudad de Valencia" },
+      { id: 797, name: "Elche", shortName: "Elche", logo: "https://is.vnecdn.net/objects/teams/797.png?v=1", venue: "Estadio Manuel Martínez Valero" },
+      { id: 532, name: "Valencia", shortName: "Valencia", logo: "https://is.vnecdn.net/objects/teams/532.png?v=1", venue: "Estadio de Mestalla" },
+      { id: 535, name: "Malaga", shortName: "Malaga", logo: "https://is.vnecdn.net/objects/teams/535.png?v=1", venue: "Estadio La Rosaleda" }
     ],
-    scorers: ["Kylian Mbappe", "Vinicius Jr", "Lamine Yamal", "Robert Lewandowski", "Antoine Griezmann"]
+    scorers: ["Kylian Mbappe", "Vinicius Jr", "Lamine Yamal", "Robert Lewandowski", "Antoine Griezmann", "Raphinha"]
   },
   {
     id: 135,
     name: "Serie A",
     country: "Italy",
     vietnameseName: "Serie A",
-    logo: "https://media.api-sports.io/football/leagues/135.png",
-    flag: "https://media.api-sports.io/flags/it.svg",
-    tier: 2 as const,
+    logo: "https://is.vnecdn.net/objects/leagues/135.png?v=1",
+    flag: "https://is.vnecdn.net/objects/flags/it.svg?v=1",
+    tier: 1 as const,
     teams: [
-      { id: 505, name: "Inter Milan", shortName: "Inter", logo: "https://media.api-sports.io/football/teams/505.png", venue: "San Siro" },
-      { id: 489, name: "AC Milan", shortName: "AC Milan", logo: "https://media.api-sports.io/football/teams/489.png", venue: "San Siro" },
-      { id: 496, name: "Juventus", shortName: "Juventus", logo: "https://media.api-sports.io/football/teams/496.png", venue: "Allianz Stadium" },
-      { id: 492, name: "Napoli", shortName: "Napoli", logo: "https://media.api-sports.io/football/teams/492.png", venue: "Diego Armando Maradona" },
-      { id: 497, name: "AS Roma", shortName: "Roma", logo: "https://media.api-sports.io/football/teams/497.png", venue: "Stadio Olimpico" }
+      { id: 505, name: "Inter Milan", shortName: "Inter", logo: "https://is.vnecdn.net/objects/teams/505.png?v=1", venue: "San Siro/Giuseppe Meazza, Milan" },
+      { id: 487, name: "Lazio", shortName: "Lazio", logo: "https://is.vnecdn.net/objects/teams/487.png?v=1", venue: "Stadio Olimpico, Rome" },
+      { id: 497, name: "AS Roma", shortName: "Roma", logo: "https://is.vnecdn.net/objects/teams/497.png?v=1", venue: "Stadio Olimpico, Rome" },
+      { id: 490, name: "Cagliari", shortName: "Cagliari", logo: "https://is.vnecdn.net/objects/teams/490.png?v=1", venue: "Unipol Domus, Cagliari" },
+      { id: 489, name: "AC Milan", shortName: "Milan", logo: "https://is.vnecdn.net/objects/teams/489.png?v=1", venue: "San Siro/Giuseppe Meazza, Milano" },
+      { id: 496, name: "Juventus", shortName: "Juventus", logo: "https://is.vnecdn.net/objects/teams/496.png?v=1", venue: "Allianz Stadium, Turin" },
+      { id: 895, name: "Como", shortName: "Como", logo: "https://is.vnecdn.net/objects/teams/895.png?v=1", venue: "Stadio Giuseppe Sinigaglia, Como" },
+      { id: 492, name: "Napoli", shortName: "Napoli", logo: "https://is.vnecdn.net/objects/teams/492.png?v=1", venue: "Stadio Diego Armando Maradona, Naples" },
+      { id: 512, name: "Frosinone", shortName: "Frosinone", logo: "https://is.vnecdn.net/objects/teams/512.png?v=1", venue: "Stadio Benito Stirpe, Frosinone" },
+      { id: 499, name: "Atalanta", shortName: "Atalanta", logo: "https://is.vnecdn.net/objects/teams/499.png?v=1", venue: "New Balance Arena, Bergamo" },
+      { id: 488, name: "Sassuolo", shortName: "Sassuolo", logo: "https://is.vnecdn.net/objects/teams/488.png?v=1", venue: "Mapei Stadium, Reggio Emilia" },
+      { id: 503, name: "Torino", shortName: "Torino", logo: "https://is.vnecdn.net/objects/teams/503.png?v=1", venue: "Stadio Olimpico Grande Torino, Turin" },
+      { id: 867, name: "Lecce", shortName: "Lecce", logo: "https://is.vnecdn.net/objects/teams/867.png?v=1", venue: "Via del Mare, Lecce" },
+      { id: 500, name: "Bologna", shortName: "Bologna", logo: "https://is.vnecdn.net/objects/teams/500.png?v=1", venue: "Renato Dall'Ara, Bologna" },
+      { id: 494, name: "Udinese", shortName: "Udinese", logo: "https://is.vnecdn.net/objects/teams/494.png?v=1", venue: "Bluenergy Stadium - Stadio Friuli, Udine" },
+      { id: 1579, name: "Monza", shortName: "Monza", logo: "https://is.vnecdn.net/objects/teams/1579.png?v=1", venue: "U-Power Stadium, Monza" },
+      { id: 495, name: "Genoa", shortName: "Genoa", logo: "https://is.vnecdn.net/objects/teams/495.png?v=1", venue: "Luigi Ferraris, Genova" },
+      { id: 523, name: "Parma", shortName: "Parma", logo: "https://is.vnecdn.net/objects/teams/523.png?v=1", venue: "Stadio Ennio Tardini, Parma" },
+      { id: 502, name: "Fiorentina", shortName: "Fiorentina", logo: "https://is.vnecdn.net/objects/teams/502.png?v=1", venue: "Stadio Artemio Franchi, Florence" },
+      { id: 517, name: "Venezia", shortName: "Venezia", logo: "https://is.vnecdn.net/objects/teams/517.png?v=1", venue: "Stadio Pierluigi Penzo, Venice" }
     ],
-    scorers: ["Lautaro Martinez", "Dusan Vlahovic", "Rafael Leao", "Marcus Thuram", "Khvicha Kvaratskhelia"]
+    scorers: ["Lautaro Martinez", "Dusan Vlahovic", "Rafael Leao", "Marcus Thuram", "Khvicha Kvaratskhelia", "Ciro Immobile"]
   },
   {
     id: 78,
     name: "Bundesliga",
     country: "Germany",
     vietnameseName: "Bundesliga",
-    logo: "https://media.api-sports.io/football/leagues/78.png",
-    flag: "https://media.api-sports.io/flags/de.svg",
-    tier: 2 as const,
+    logo: "https://is.vnecdn.net/objects/leagues/78.png?v=1",
+    flag: "https://is.vnecdn.net/objects/flags/de.svg?v=1",
+    tier: 1 as const,
     teams: [
-      { id: 157, name: "Bayern Munich", shortName: "Bayern", logo: "https://media.api-sports.io/football/teams/157.png", venue: "Allianz Arena" },
-      { id: 168, name: "Bayer Leverkusen", shortName: "Leverkusen", logo: "https://media.api-sports.io/football/teams/168.png", venue: "BayArena" },
-      { id: 165, name: "Borussia Dortmund", shortName: "Dortmund", logo: "https://media.api-sports.io/football/teams/165.png", venue: "Signal Iduna Park" },
-      { id: 173, name: "RB Leipzig", shortName: "Leipzig", logo: "https://media.api-sports.io/football/teams/173.png", venue: "Red Bull Arena" }
+      { id: 160, name: "Freiburg", shortName: "Freiburg", logo: "https://is.vnecdn.net/objects/teams/160.png?v=1", venue: "Europa-Park Stadion, Freiburg" },
+      { id: 165, name: "Borussia Dortmund", shortName: "Dortmund", logo: "https://is.vnecdn.net/objects/teams/165.png?v=1", venue: "Signal Iduna Park, Dortmund" },
+      { id: 157, name: "Bayern Munich", shortName: "Bayern", logo: "https://is.vnecdn.net/objects/teams/157.png?v=1", venue: "Allianz Arena, Munich" },
+      { id: 168, name: "Bayer Leverkusen", shortName: "Leverkusen", logo: "https://is.vnecdn.net/objects/teams/168.png?v=1", venue: "BayArena, Leverkusen" },
+      { id: 173, name: "RB Leipzig", shortName: "Leipzig", logo: "https://is.vnecdn.net/objects/teams/173.png?v=1", venue: "Red Bull Arena, Leipzig" },
+      { id: 170, name: "FC Augsburg", shortName: "Augsburg", logo: "https://is.vnecdn.net/objects/teams/170.png?v=1", venue: "WWK Arena, Augsburg" },
+      { id: 162, name: "Werder Bremen", shortName: "Bremen", logo: "https://is.vnecdn.net/objects/teams/162.png?v=1", venue: "Weserstadion, Bremen" },
+      { id: 164, name: "Mainz 05", shortName: "Mainz", logo: "https://is.vnecdn.net/objects/teams/164.png?v=1", venue: "Mewa Arena, Mainz" },
+      { id: 1660, name: "SV Elversberg", shortName: "Elversberg", logo: "https://is.vnecdn.net/objects/teams/1660.png?v=1", venue: "Waldstadion Kaiserlinde, Spiesen-Elversberg" },
+      { id: 192, name: "1. FC Köln", shortName: "Köln", logo: "https://is.vnecdn.net/objects/teams/192.png?v=1", venue: "RheinEnergieStadion, Cologne" },
+      { id: 172, name: "VfB Stuttgart", shortName: "Stuttgart", logo: "https://is.vnecdn.net/objects/teams/172.png?v=1", venue: "MHPArena, Stuttgart" },
+      { id: 175, name: "Hamburger SV", shortName: "Hamburg", logo: "https://is.vnecdn.net/objects/teams/175.png?v=1", venue: "Volksparkstadion, Hamburg" },
+      { id: 174, name: "Schalke 04", shortName: "Schalke", logo: "https://is.vnecdn.net/objects/teams/174.png?v=1", venue: "Veltins Arena, Gelsenkirchen" },
+      { id: 169, name: "Eintracht Frankfurt", shortName: "Frankfurt", logo: "https://is.vnecdn.net/objects/teams/169.png?v=1", venue: "Deutsche Bank Park, Frankfurt" },
+      { id: 185, name: "SC Paderborn 07", shortName: "Paderborn", logo: "https://is.vnecdn.net/objects/teams/185.png?v=1", venue: "Home Deluxe Arena, Paderborn" },
+      { id: 182, name: "Union Berlin", shortName: "Union Berlin", logo: "https://is.vnecdn.net/objects/teams/182.png?v=1", venue: "An der Alten Försterei, Berlin" },
+      { id: 167, name: "Hoffenheim", shortName: "Hoffenheim", logo: "https://is.vnecdn.net/objects/teams/167.png?v=1", venue: "PreZero Arena, Sinsheim" },
+      { id: 163, name: "Borussia M'gladbach", shortName: "M'gladbach", logo: "https://is.vnecdn.net/objects/teams/163.png?v=1", venue: "Borussia-Park, Monchengladbach" }
     ],
-    scorers: ["Harry Kane", "Florian Wirtz", "Jamal Musiala", "Victor Boniface"]
+    scorers: ["Harry Kane", "Florian Wirtz", "Jamal Musiala", "Victor Boniface", "Serhou Guirassy", "Benjamin Sesko"]
   },
   {
     id: 61,
@@ -452,7 +296,21 @@ function generateMatchEvents(
 }
 
 export function generateAllFixtures(): FixtureItem[] {
-  const allFixtures: FixtureItem[] = [...EXACT_PROMPT_FIXTURES];
+  // Real Premier League, Champions League, LaLiga, V-League, Serie A & Bundesliga data from VnExpress API
+  const realPremierLeague = getInitialPremierLeagueFixtures();
+  const realChampionsLeague = getInitialChampionsLeagueFixtures();
+  const realLaLiga = getInitialLaLigaFixtures();
+  const realVLeague = getInitialVLeagueFixtures();
+  const realSerieA = getInitialSerieAFixtures();
+  const realBundesliga = getInitialBundesligaFixtures();
+  const allFixtures: FixtureItem[] = [
+    ...realPremierLeague, 
+    ...realChampionsLeague, 
+    ...realLaLiga, 
+    ...realVLeague, 
+    ...realSerieA,
+    ...realBundesliga
+  ];
 
   const dates = [
     "2026-09-28",
@@ -479,10 +337,13 @@ export function generateAllFixtures(): FixtureItem[] {
 
   dates.forEach((dateStr, dayIndex) => {
     LEAGUES_CONFIG.forEach((league, leagueIdx) => {
+      // Premier League (39), Champions League (2), LaLiga (140), V-League (340/382), Serie A (135) & Bundesliga (78) data is 100% REAL from VnExpress
+      if (league.id === 39 || league.id === 2 || league.id === 140 || league.id === 340 || league.id === 382 || league.id === 135 || league.id === 78) return;
+
       const teams = league.teams;
       if (teams.length < 2) return;
 
-      const pairsCount = league.tier === 1 ? 4 : league.tier === 2 ? 3 : 2;
+      const pairsCount = (league.tier as number) === 1 ? 4 : (league.tier as number) === 2 ? 3 : 2;
 
       for (let p = 0; p < pairsCount; p++) {
         const homeIdx = (dayIndex * 3 + p * 2) % teams.length;
@@ -529,8 +390,8 @@ export function generateAllFixtures(): FixtureItem[] {
         let winnerHome: boolean | null = null;
         let winnerAway: boolean | null = null;
 
-        const isPast = dateStr < "2026-09-30";
-        const isToday = dateStr === "2026-09-30";
+        const isPast = dateStr < "2026-10-13";
+        const isToday = dateStr === "2026-10-13";
 
         if (isPast) {
           statusShort = "FT";
@@ -721,16 +582,31 @@ export function generateAllFixtures(): FixtureItem[] {
 }
 
 export const PREMIER_LEAGUE_STANDINGS: StandingTeam[] = [
-  { rank: 1, team: { id: 50, name: "Manchester City", logo: "https://media.api-sports.io/football/teams/50.png", winner: null }, played: 6, win: 5, draw: 1, lose: 0, goalsFor: 15, goalsAgainst: 4, goalDifference: 11, points: 16, form: ['W', 'W', 'D', 'W', 'W'] },
-  { rank: 2, team: { id: 42, name: "Arsenal", logo: "https://media.api-sports.io/football/teams/42.png", winner: null }, played: 6, win: 4, draw: 2, lose: 0, goalsFor: 13, goalsAgainst: 4, goalDifference: 9, points: 14, form: ['W', 'D', 'W', 'W', 'D'] },
-  { rank: 3, team: { id: 40, name: "Liverpool", logo: "https://media.api-sports.io/football/teams/40.png", winner: null }, played: 6, win: 4, draw: 1, lose: 1, goalsFor: 14, goalsAgainst: 6, goalDifference: 8, points: 13, form: ['W', 'L', 'W', 'W', 'D'] },
-  { rank: 4, team: { id: 66, name: "Aston Villa", logo: "https://media.api-sports.io/football/teams/66.png", winner: null }, played: 6, win: 4, draw: 0, lose: 2, goalsFor: 11, goalsAgainst: 8, goalDifference: 3, points: 12, form: ['W', 'W', 'L', 'W', 'W'] },
-  { rank: 5, team: { id: 49, name: "Chelsea", logo: "https://media.api-sports.io/football/teams/49.png", winner: null }, played: 6, win: 3, draw: 2, lose: 1, goalsFor: 12, goalsAgainst: 8, goalDifference: 4, points: 11, form: ['W', 'W', 'D', 'W', 'L'] },
-  { rank: 6, team: { id: 33, name: "Manchester United", logo: "https://media.api-sports.io/football/teams/33.png", winner: null }, played: 6, win: 3, draw: 0, lose: 3, goalsFor: 8, goalsAgainst: 8, goalDifference: 0, points: 9, form: ['W', 'L', 'L', 'W', 'W'] }
+  { rank: 1, team: { id: 50, name: "Man City", logo: "https://is.vnecdn.net/objects/teams/50.png?v=1", winner: null }, played: 6, win: 6, draw: 0, lose: 0, goalsFor: 16, goalsAgainst: 5, goalDifference: 11, points: 18, form: ['W', 'W', 'W', 'W', 'W'] },
+  { rank: 2, team: { id: 42, name: "Arsenal", logo: "https://is.vnecdn.net/objects/teams/42.png?v=1", winner: null }, played: 6, win: 5, draw: 0, lose: 1, goalsFor: 10, goalsAgainst: 5, goalDifference: 5, points: 15, form: ['W', 'L', 'W', 'W', 'W'] },
+  { rank: 3, team: { id: 51, name: "Brighton", logo: "https://is.vnecdn.net/objects/teams/51.png?v=1", winner: null }, played: 6, win: 4, draw: 1, lose: 1, goalsFor: 18, goalsAgainst: 5, goalDifference: 13, points: 13, form: ['W', 'W', 'W', 'D', 'L'] },
+  { rank: 4, team: { id: 55, name: "Brentford", logo: "https://is.vnecdn.net/objects/teams/55.png?v=1", winner: null }, played: 6, win: 2, draw: 4, lose: 0, goalsFor: 12, goalsAgainst: 6, goalDifference: 6, points: 10, form: ['D', 'W', 'D', 'D', 'D'] },
+  { rank: 5, team: { id: 45, name: "Everton", logo: "https://is.vnecdn.net/objects/teams/45.png?v=1", winner: null }, played: 6, win: 2, draw: 4, lose: 0, goalsFor: 8, goalsAgainst: 5, goalDifference: 3, points: 10, form: ['D', 'W', 'D', 'D', 'D'] },
+  { rank: 6, team: { id: 49, name: "Chelsea", logo: "https://is.vnecdn.net/objects/teams/49.png?v=1", winner: null }, played: 6, win: 3, draw: 1, lose: 2, goalsFor: 15, goalsAgainst: 13, goalDifference: 2, points: 10, form: ['W', 'L', 'D', 'L', 'W'] },
+  { rank: 7, team: { id: 63, name: "Leeds", logo: "https://is.vnecdn.net/objects/teams/63.png?v=1", winner: null }, played: 6, win: 2, draw: 3, lose: 1, goalsFor: 8, goalsAgainst: 5, goalDifference: 3, points: 9, form: ['L', 'D', 'W', 'D', 'D'] },
+  { rank: 8, team: { id: 64, name: "Hull City", logo: "https://is.vnecdn.net/objects/teams/64.png?v=1", winner: null }, played: 6, win: 2, draw: 3, lose: 1, goalsFor: 8, goalsAgainst: 6, goalDifference: 2, points: 9, form: ['D', 'L', 'D', 'D', 'W'] },
+  { rank: 9, team: { id: 40, name: "Liverpool", logo: "https://is.vnecdn.net/objects/teams/40.png?v=1", winner: null }, played: 6, win: 2, draw: 3, lose: 1, goalsFor: 7, goalsAgainst: 7, goalDifference: 0, points: 9, form: ['L', 'W', 'D', 'W', 'D'] },
+  { rank: 10, team: { id: 57, name: "Ipswich", logo: "https://is.vnecdn.net/objects/teams/57.png?v=1", winner: null }, played: 6, win: 3, draw: 0, lose: 3, goalsFor: 9, goalsAgainst: 12, goalDifference: -3, points: 9, form: ['W', 'L', 'W', 'L', 'L'] },
+  { rank: 11, team: { id: 34, name: "Newcastle", logo: "https://is.vnecdn.net/objects/teams/34.png?v=1", winner: null }, played: 6, win: 2, draw: 2, lose: 2, goalsFor: 10, goalsAgainst: 13, goalDifference: -3, points: 8, form: ['L', 'W', 'L', 'D', 'W'] },
+  { rank: 12, team: { id: 52, name: "Crystal Palace", logo: "https://is.vnecdn.net/objects/teams/52.png?v=1", winner: null }, played: 6, win: 2, draw: 1, lose: 3, goalsFor: 9, goalsAgainst: 12, goalDifference: -3, points: 7, form: ['W', 'D', 'L', 'W', 'L'] },
+  { rank: 13, team: { id: 33, name: "Man Utd", logo: "https://is.vnecdn.net/objects/teams/33.png?v=1", winner: null }, played: 6, win: 1, draw: 3, lose: 2, goalsFor: 9, goalsAgainst: 9, goalDifference: 0, points: 6, form: ['D', 'D', 'L', 'D', 'W'] },
+  { rank: 14, team: { id: 1346, name: "Coventry", logo: "https://is.vnecdn.net/objects/teams/1346.png?v=1", winner: null }, played: 6, win: 2, draw: 0, lose: 4, goalsFor: 5, goalsAgainst: 11, goalDifference: -6, points: 6, form: ['W', 'W', 'L', 'L', 'L'] },
+  { rank: 15, team: { id: 65, name: "Nottingham Forest", logo: "https://is.vnecdn.net/objects/teams/65.png?v=1", winner: null }, played: 6, win: 1, draw: 2, lose: 3, goalsFor: 5, goalsAgainst: 8, goalDifference: -3, points: 5, form: ['L', 'L', 'W', 'D', 'D'] },
+  { rank: 16, team: { id: 66, name: "Aston Villa", logo: "https://is.vnecdn.net/objects/teams/66.png?v=1", winner: null }, played: 6, win: 1, draw: 2, lose: 3, goalsFor: 6, goalsAgainst: 11, goalDifference: -5, points: 5, form: ['D', 'W', 'L', 'D', 'L'] },
+  { rank: 17, team: { id: 746, name: "Sunderland", logo: "https://is.vnecdn.net/objects/teams/746.png?v=1", winner: null }, played: 6, win: 1, draw: 1, lose: 4, goalsFor: 6, goalsAgainst: 12, goalDifference: -6, points: 4, form: ['L', 'L', 'L', 'D', 'W'] },
+  { rank: 18, team: { id: 35, name: "Bournemouth", logo: "https://is.vnecdn.net/objects/teams/35.png?v=1", winner: null }, played: 6, win: 0, draw: 3, lose: 3, goalsFor: 7, goalsAgainst: 13, goalDifference: -6, points: 3, form: ['L', 'L', 'D', 'D', 'D'] },
+  { rank: 19, team: { id: 47, name: "Tottenham", logo: "https://is.vnecdn.net/objects/teams/47.png?v=1", winner: null }, played: 6, win: 0, draw: 3, lose: 3, goalsFor: 3, goalsAgainst: 9, goalDifference: -6, points: 3, form: ['D', 'L', 'D', 'D', 'L'] },
+  { rank: 20, team: { id: 36, name: "Fulham", logo: "https://is.vnecdn.net/objects/teams/36.png?v=1", winner: null }, played: 6, win: 0, draw: 2, lose: 4, goalsFor: 6, goalsAgainst: 10, goalDifference: -4, points: 2, form: ['L', 'D', 'D', 'L', 'L'] }
 ];
 
-export const VLEAGUE_STANDINGS: StandingTeam[] = [
-  { rank: 1, team: { id: 3801, name: "Công An Hà Nội", logo: "https://media.api-sports.io/football/teams/3801.png", winner: null }, played: 5, win: 4, draw: 1, lose: 0, goalsFor: 10, goalsAgainst: 2, goalDifference: 8, points: 13, form: ['W', 'W', 'D', 'W', 'W'] },
-  { rank: 2, team: { id: 3803, name: "Thép Xanh Nam Định", logo: "https://media.api-sports.io/football/teams/3803.png", winner: null }, played: 5, win: 3, draw: 2, lose: 0, goalsFor: 9, goalsAgainst: 4, goalDifference: 5, points: 11, form: ['W', 'D', 'W', 'W', 'D'] },
-  { rank: 3, team: { id: 3802, name: "Hà Nội FC", logo: "https://media.api-sports.io/football/teams/3802.png", winner: null }, played: 5, win: 3, draw: 1, lose: 1, goalsFor: 8, goalsAgainst: 4, goalDifference: 4, points: 10, form: ['L', 'W', 'W', 'D', 'W'] }
-];
+export const VLEAGUE_STANDINGS: StandingTeam[] = getInitialVLeagueStandings();
+export const CHAMPIONS_LEAGUE_STANDINGS: StandingTeam[] = getInitialChampionsLeagueStandings();
+export const LALIGA_STANDINGS: StandingTeam[] = getInitialLaLigaStandings();
+export const SERIEA_STANDINGS: StandingTeam[] = getInitialSerieAStandings();
+export const BUNDESLIGA_STANDINGS: StandingTeam[] = getInitialBundesligaStandings();
+
